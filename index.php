@@ -14,12 +14,22 @@ function rgb2html($r, $g, $b)
 
     $median = $arr[1];
 
+
     $highestVal = max($r, $g, $b);
     $lowestVal = min($r, $g, $b);
 
-    $nr=0;
-    $ng=0;
-    $nb=0;
+
+    if ($highestVal != 0) {
+        $newMedian = (255 * $median) / $highestVal;
+    } else {
+        $newMedian = $median;
+    }
+
+    $newMedian = 100 * round($newMedian / 100);
+
+    $nr = 0;
+    $ng = 0;
+    $nb = 0;
 
     if ($r == $highestVal) {
         $nr = 255;
@@ -36,6 +46,13 @@ function rgb2html($r, $g, $b)
     } else if ($b == $lowestVal) {
         $nb = 0;
     }
+    if ($r == $median) {
+        $nr = $newMedian;
+    } else if ($g == $median) {
+        $ng = $newMedian;
+    } else if ($b == $median) {
+        $nb = $newMedian;
+    }
 
     $r = dechex($nr);
     $g = dechex($ng);
@@ -44,15 +61,22 @@ function rgb2html($r, $g, $b)
     $color = (strlen($r) < 2 ? '0' : '') . $r;
     $color .= (strlen($g) < 2 ? '0' : '') . $g;
     $color .= (strlen($b) < 2 ? '0' : '') . $b;
-    return '#' . $color;
-}
 
-$urls = ['spring-snowdrops-wallpaper-flowers-32897799-1920-1080.jpg', 'uRBtadp.jpg'];
+  
+    if(strlen($color) == 6){
+        return '#' . $color;
+    }else{
+        return "#FFFFFF";
+    }
+
+};
+
+$urls = ['spring-snowdrops-wallpaper-flowers-32897799-1920-1080.jpg', 'uRBtadp.jpg', 'orange_cat_2_by_francescadelfino-d6rmo99.jpg', 'Meaning-of-morning-glory-flower.jpg'];
 $url = 'uRBtadp.jpg';
 
-foreach ($urls as $url){
+foreach ($urls as $url) {
 
-    echo '<img src="',$url,'" style="height:200; width:200;"><br/>';
+    echo '<img src="', $url, '" style="height:200; width:200;"><br/>';
 
     $colors = [];
 
@@ -77,7 +101,6 @@ foreach ($urls as $url){
             $b = $rgb & 0xFF;
 
 
-
             $color = rgb2html($r, $g, $b);
 
             if (!array_key_exists($color, $colors)) {
@@ -92,9 +115,12 @@ foreach ($urls as $url){
     arsort($colors);
     $colors = array_keys($colors);
 
-//if (($key = array_search('#000000', $colors)) !== false) {
-//    array_splice($colors, $key, 1);
-//}
+    if (($key = array_search('#000000', $colors)) !== false) {
+        array_splice($colors, $key, 1);
+    }
+    if (($key = array_search('#FFFFFF', $colors)) !== false) {
+        array_splice($colors, $key, 1);
+    }
 
     for ($i = 0; $i < $answerToEverything * $answerToEverything; $i++) {
         if (isset($colors[$i])) {
